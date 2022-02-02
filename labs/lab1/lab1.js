@@ -1,6 +1,7 @@
 'use strict';
 /**
  * Reflection question 1
+ * undefined evaluates to false
  */
 
 const imported = require("./inventory.js");
@@ -16,6 +17,7 @@ names
 
 /**
  * Reflection question 2
+ *
  */
 
 console.log('\n--- Assignment 1 ---------------------------------------')
@@ -36,25 +38,30 @@ console.log('\n--- Assignment 2 ---------------------------------------')
 class Salad {
   static instanceCounter = 0;
   constructor() {
-    this.uuid = 'salad_' + Salad.instanceCounter++;
+    this.ingredients = {};
+    //this.uuid = 'salad_' + Salad.instanceCounter++;
+    Object.defineProperty(this, "uuid", {
+      value: 'salad_' + Salad.instanceCounter++,
+      writable: false
+    });
   }
   add(name, properties) { // return this object to make it chainable
-    this[name] = properties;
+    this.ingredients[name] = properties;
     return this;
   }
   remove(name){ // return this object to make it chainable
-    delete this[name];
+    delete this.ingredients[name];
     return this;
   }
 }
 let myCaesarSalad = new Salad()
-.add('Sallad', imported.inventory['Sallad'])
-.add('Kycklingfilé', imported.inventory['Kycklingfilé'])
-.add('Bacon', imported.inventory['Bacon'])
-.add('Krutonger', imported.inventory['Krutonger'])
-.add('Parmesan', imported.inventory['Parmesan'])
-.add('Ceasardressing', imported.inventory['Ceasardressing'])
-.add('Gurka', imported.inventory['Gurka']);
+  .add('Sallad', imported.inventory['Sallad'])
+  .add('Kycklingfilé', imported.inventory['Kycklingfilé'])
+  .add('Bacon', imported.inventory['Bacon'])
+  .add('Krutonger', imported.inventory['Krutonger'])
+  .add('Parmesan', imported.inventory['Parmesan'])
+  .add('Ceasardressing', imported.inventory['Ceasardressing'])
+  .add('Gurka', imported.inventory['Gurka']);
 console.log(JSON.stringify(myCaesarSalad) + '\n');
 myCaesarSalad.remove('Gurka');
 console.log(JSON.stringify(myCaesarSalad) + '\n');
@@ -62,9 +69,7 @@ console.log(JSON.stringify(myCaesarSalad) + '\n');
 console.log('\n--- Assignment 3 ---------------------------------------')
 
 Salad.prototype.getPrice = function () {
-  console.log(Object.values(this))
-  return Object.values(this)
-    .filter(v => v.price)
+  return Object.values(this.ingredients)
     .map(v => v.price)
     .reduce((acc, cur) => acc + cur)
 }
@@ -73,7 +78,7 @@ console.log('En ceasarsallad kostar ' + myCaesarSalad.getPrice() + 'kr');
 // En ceasarsallad kostar 45kr
 
 Salad.prototype.count = function (field) {
-  return Object.values(this)
+  return Object.values(this.ingredients)
     .filter(name => name[field])
     .length
 }
@@ -90,23 +95,29 @@ console.log('typeof myCaesarSalad: ' + typeof myCaesarSalad);
 console.log('typeof myCaesarSalad.prototype: ' + typeof myCaesarSalad.prototype);
 console.log('check 1: ' + (Salad.prototype === Object.getPrototypeOf(myCaesarSalad)));
 console.log('check 2: ' + (Object.prototype === Object.getPrototypeOf(Salad.prototype)));
+console.log('Salad: ' + Salad);
+console.log('Salad.prototype: ' + Salad.prototype);
+console.log('Salad.prototype.prototype: ' + Salad.prototype.prototype);
+console.log('myCaesarSalad: ' + myCaesarSalad);
+console.log('myCaesarSalad.prototype: ' + myCaesarSalad.prototype);
 
 console.log('\n--- Assignment 4 ---------------------------------------')
 
 class GourmetSalad extends Salad {
   add(name, properties, size = 1) { // return this object to make it chainable
     let propertiesWithSize = {...properties};
-    let previousSize = this[name]?.size || 0;
+    let previousSize = this.ingredients[name]?.size || 0;
     propertiesWithSize.size = size + previousSize;
     return super.add(name, propertiesWithSize);
   }
-}
 
-GourmetSalad.prototype.getPrice = function () {
-  return Object.values(this)
-    .filter(v => v.price)
-    .map(v => v.price * v.size)
-    .reduce((acc, cur) => acc + cur)
+  getPrice() {
+    return Object.values(this.ingredients)
+      .filter(v => v.price)
+      .map(v => v.price * v.size)
+      .reduce((acc, cur) => acc + cur)
+  }
+
 }
 
 let myGourmetSalad = new GourmetSalad()
@@ -130,10 +141,15 @@ console.log(new GourmetSalad)
 
 /**
  * Reflection question 4
+ * The function object
  */
 /**
  * Reflection question 5
+ *  Object.defineProperty(this, "uuid", {
+ *    value: 'salad_' + Salad.instanceCounter++,
+ *    writable: false
  */
 /**
  * Reflection question 6
+ * Start property name with #
  */
