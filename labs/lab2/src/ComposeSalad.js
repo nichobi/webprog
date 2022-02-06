@@ -68,7 +68,7 @@ class ComposeSalad extends Component {
           <MultipleSelect inventory={this.props.inventory} name='extra' onChange={this.handleMultipleChange} selected={this.getExtras()} />
 
           <form onSubmit={this.handleSubmit}>
-            <input type="submit" value="Submit Salad" />
+            <input type="submit" value="Submit Salad" class="btn btn-primary mt-3 "/>
           </form>
 
       </div>

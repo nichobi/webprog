@@ -16,7 +16,12 @@ class SingleSelect extends Component {
       .filter(name => this.props.inventory[name][this.props.name]);
     return (
       <label> Pick your {this.props.name}:
-      <select value={this.props.selected} onChange={this.handleChange} id='select_foundation'>
+      <select
+        class="form-select"
+        value={this.props.selected}
+        onChange={this.handleChange}
+        id='select_foundation'
+      >
         <option key='' value=''></option>
         {ingredients.map(name => <option key={name} value={name}> {name}</option>)}
       </select>

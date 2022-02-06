@@ -16,13 +16,23 @@ class MultipleSelect extends Component {
       .filter(name => this.props.inventory[name][this.props.name]);
     return (
       <div>
-      <label> Pick your {this.props.name}s: </label>
-        {ingredients.map(name =>
-          <div key={name}>
-            <input type="checkbox" value={name} name={name} onChange={this.handleChange} checked = {this.props.selected.includes(name)}/>
-            <label> {name} </label>
-          </div>
-        )}
+        <label> Pick your {this.props.name}s: </label>
+        <div className="row p-3 bg-white border rounded-3">
+          {ingredients.map(name =>
+            <div key={name} className="col-6">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                value={name}
+                name={name}
+                onChange={this.handleChange}
+                checked={this.props.selected.includes(name)}
+                id={"extra-" + name}
+              />
+              <label htmlFor={"extra-" + name}> {name} </label>
+            </div>
+          )}
+        </div>
       </div>
     )
   }
