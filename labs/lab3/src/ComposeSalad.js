@@ -9,7 +9,7 @@ class ComposeSalad extends Component {
     this.state = { foundation: ''
                  , protein:    ''
                  , dressing:   ''
-                 , extra: {}
+                 , extra:      {}
                  };
     this.handleSingleChange = this.handleSingleChange.bind(this);
     this.handleMultipleChange = this.handleMultipleChange.bind(this);
@@ -34,22 +34,26 @@ class ComposeSalad extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    let inventory = this.props.inventory;
-    let salad = new Salad()
-      .add(this.state.foundation, inventory[this.state.foundation])
-      .add(this.state.protein,    inventory[this.state.protein])
-      .add(this.state.dressing,   inventory[this.state.dressing])
-    Object.entries(this.state.extra)
-      .filter(([_, v]) => v)
-      .map(([k,_]) => k)
-      .forEach(e => salad.add(e, inventory[e]))
-    this.props.addToCart(salad);
+    event.target.classList.add("was-validated");
+    if(event.target.checkValidity()) {
+      let inventory = this.props.inventory;
+      let salad = new Salad()
+        .add(this.state.foundation, inventory[this.state.foundation])
+        .add(this.state.protein,    inventory[this.state.protein])
+        .add(this.state.dressing,   inventory[this.state.dressing])
+      Object.entries(this.state.extra)
+        .filter(([_, v]) => v)
+        .map(([k,_]) => k)
+        .forEach(e => salad.add(e, inventory[e]))
+      this.props.addToCart(salad);
 
-    this.setState({ foundation: ''
-                  , protein:    ''
-                  , dressing:   ''
-                  , extra: {}
-                  });
+      this.props.navigate("/view-cart");
+      this.setState({ foundation: ''
+                    , protein:    ''
+                    , dressing:   ''
+                    , extra:      {}
+                    });
+    }
   }
 
   getExtras() {
@@ -62,13 +66,12 @@ class ComposeSalad extends Component {
       <div className="row h-200 p-5 bg-light border rounded-3">
         <h2>Välj innehållet i din sallad</h2>
 
-          <SingleSelect inventory={this.props.inventory} name='foundation' onChange={this.handleSingleChange} selected={this.state.foundation} />
-          <SingleSelect inventory={this.props.inventory} name='protein' onChange={this.handleSingleChange} selected={this.state.protein} />
-          <SingleSelect inventory={this.props.inventory} name='dressing' onChange={this.handleSingleChange} selected={this.state.dressing} />
-          <MultipleSelect inventory={this.props.inventory} name='extra' onChange={this.handleMultipleChange} selected={this.getExtras()} />
-
-          <form onSubmit={this.handleSubmit}>
-            <input type="submit" value="Submit Salad" class="btn btn-primary mt-3 "/>
+          <form onSubmit={this.handleSubmit} noValidate>
+            <SingleSelect inventory={this.props.inventory} name='foundation' onChange={this.handleSingleChange} selected={this.state.foundation} />
+            <SingleSelect inventory={this.props.inventory} name='protein' onChange={this.handleSingleChange} selected={this.state.protein} />
+            <SingleSelect inventory={this.props.inventory} name='dressing' onChange={this.handleSingleChange} selected={this.state.dressing} />
+            <MultipleSelect inventory={this.props.inventory} name='extra' onChange={this.handleMultipleChange} selected={this.getExtras()} />
+            <input type="submit" value="Submit Salad" className="btn btn-primary mt-3 "/>
           </form>
 
       </div>

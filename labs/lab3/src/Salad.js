@@ -31,6 +31,10 @@ class Salad {
       .length
   }
 
+  toString() {
+    return Object.keys(this.ingredients).join(", ") + ", " + this.getPrice() + " kr"
+  }
+
 }
 
 export default Salad;

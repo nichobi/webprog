@@ -8,9 +8,11 @@ class CartView extends Component {
 
   render() {
     return (
-      <div>
-      {this.props.cart.map(salad => <label key={salad.uuid}> {JSON.stringify(salad)} </label>)}
-      </div>
+      <ul>
+        {this.props.cart.map(salad =>
+          <li key={salad.uuid}> {salad.toString()} </li>
+        )}
+      </ul>
     )
   }
 

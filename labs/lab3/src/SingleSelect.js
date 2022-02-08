@@ -8,6 +8,7 @@ class SingleSelect extends Component {
   }
 
   handleChange(event) {
+    event.target.parentElement.classList.add("was-validated");
     this.props.onChange(this.props.name, event.target.value);
   }
 
@@ -15,9 +16,11 @@ class SingleSelect extends Component {
     let ingredients = Object.keys(this.props.inventory)
       .filter(name => this.props.inventory[name][this.props.name]);
     return (
+      <div>
       <label> Pick your {this.props.name}:
       <select
-        class="form-select"
+        required
+        className="form-select"
         value={this.props.selected}
         onChange={this.handleChange}
         id='select_foundation'
@@ -25,7 +28,11 @@ class SingleSelect extends Component {
         <option key='' value=''></option>
         {ingredients.map(name => <option key={name} value={name}> {name}</option>)}
       </select>
+      <div className="valid-feedback">valid</div>
+      <div className="invalid-feedback">invalid</div>
+
       </label>
+      </div>
     )
   }
 

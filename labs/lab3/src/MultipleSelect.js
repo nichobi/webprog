@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { Link } from "react-router-dom";
 
 class MultipleSelect extends Component {
   constructor(props) {
@@ -22,14 +23,14 @@ class MultipleSelect extends Component {
             <div key={name} className="col-6">
               <input
                 type="checkbox"
-                class="form-check-input"
+                className="form-check-input"
                 value={name}
                 name={name}
                 onChange={this.handleChange}
                 checked={this.props.selected.includes(name)}
                 id={"extra-" + name}
               />
-              <label htmlFor={"extra-" + name}> {name} </label>
+              <Link className='nav-link' to={'/view-ingredient/' + name}> {name} </Link>
             </div>
           )}
         </div>
