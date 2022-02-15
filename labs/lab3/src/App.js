@@ -1,6 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes, NavLink } from "react-router-dom";
 import inventory from './inventory.ES6';
 import ComposeSaladWrapper from './ComposeSaladWrapper';
 import CartView from './CartView';
@@ -61,17 +61,17 @@ function Header() { return (
 
 function Navbar() { return (
   <ul className="nav nav-tabs">
-    <Link className='nav-link' to="/">
+    <NavLink className='nav-link' to="/">
       Homepage
-    </Link>
+    </NavLink>
     <li className="nav-item">
-    <Link className="nav-link" to="/compose-salad">
+    <NavLink className="nav-link" to="/compose-salad">
         Komponera en sallad
-    </Link>
+    </NavLink>
     </li>
-    <Link className='nav-link' to="/view-cart">
+    <NavLink className='nav-link' to="/view-cart">
       Kolla din beställning
-    </Link>
+    </NavLink>
   </ul>
 )}
 
