@@ -1,7 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Route, Routes, NavLink } from "react-router-dom";
-import inventory from './inventory.ES6';
 import ComposeSaladWrapper from './ComposeSaladWrapper';
 import CartView from './CartView';
 import ViewIngredient from './ViewIngredient';
@@ -10,13 +9,16 @@ import { Component } from 'react';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {cart: []};
+    this.state = {cart: [], inventory: {}};
 
     this.addToCart = this.addToCart.bind(this);
   }
 
+  componentDidMount(){
+    this.fetchInventory()
+  }
+
   addToCart(salad) {
-    console.log('previous app state:' + JSON.stringify(this.state))
     this.setState(prevState => (
       { ...prevState
       , cart: prevState.cart.concat(salad)
@@ -38,12 +40,38 @@ class App extends Component {
   renderPageContent(){ return(
       <Routes>
         <Route index element=<h2>Welcome</h2>/>
-        <Route path='/compose-salad' element={<ComposeSaladWrapper inventory={inventory} addToCart={this.addToCart}/>}/>
+        <Route path='/compose-salad' element={<ComposeSaladWrapper inventory={this.state.inventory} addToCart={this.addToCart}/>}/>
         <Route path='/view-cart' element={<CartView cart={this.state.cart}/>}/>
-        <Route path='/view-ingredient/:name' element={<ViewIngredient inventory={inventory}/>}/>
+        <Route path='/view-ingredient/:name' element={<ViewIngredient inventory={this.state.inventory}/>}/>
         <Route path='*' element=<h2>Page not found </h2>/>
       </Routes>
   )}
+
+  fetchInventory() {
+    const promises = ["foundations", "proteins", "extras", "dressings"]
+      .map(type =>
+        fetchIngredientList(type)
+          .then(ingredients =>
+            ingredients.map(name =>
+              fetchIngredient(type, name)
+          ))
+          .then(promises => Promise.all(promises)
+          )
+      );
+    Promise.all(promises)
+      .then(ingredients =>
+        this.updateInventory(Object.assign({}, ...ingredients.flat())));
+  }
+
+  updateInventory(inventory) {
+    console.log('updateInventory:' + JSON.stringify(inventory))
+    this.setState(prevState => {
+      return {...prevState,
+       inventory: inventory
+      }
+    });
+  }
+
 }
 
 
@@ -74,5 +102,26 @@ function Navbar() { return (
     </NavLink>
   </ul>
 )}
+
+function safeFetchJson(url) {
+  return fetch(url)
+    .then(response => {
+      if(!response.ok) {
+        throw new Error('${url} returned status ${response.status}');
+      }
+      return response.json();
+    });
+}
+function fetchIngredient(type, name) {
+  return safeFetchJson("http://localhost:8080/" + type + "/" + name)
+    .then(info => {
+      return  {[name]: info};
+    });
+}
+
+function fetchIngredientList(type) {
+  return safeFetchJson("http://localhost:8080/" + type);
+}
+
 
 export default App;
