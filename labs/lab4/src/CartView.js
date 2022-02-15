@@ -29,6 +29,7 @@ class CartView extends Component {
         body: JSON.stringify(order)
       }).then(res => res.json())
         .then(data => alert(JSON.stringify(data)))
+        .then(this.props.clearCart());
   }
 
 }

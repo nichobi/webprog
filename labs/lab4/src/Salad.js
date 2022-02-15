@@ -1,10 +1,12 @@
+import { v4 as uuidv4 } from 'uuid';
+
 class Salad {
   static instanceCounter = 0;
   constructor() {
     this.ingredients = {};
     //this.uuid = 'salad_' + Salad.instanceCounter++;
     Object.defineProperty(this, "uuid", {
-      value: 'salad_' + Salad.instanceCounter++,
+      value: uuidv4(),
       writable: false
     });
   }

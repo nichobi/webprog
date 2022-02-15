@@ -5,13 +5,15 @@ import ComposeSaladWrapper from './ComposeSaladWrapper';
 import CartView from './CartView';
 import ViewIngredient from './ViewIngredient';
 import { Component } from 'react';
+import Salad from './Salad';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {cart: [], inventory: {}};
+    this.state = {cart: this.getCartStorage(), inventory: {}};
 
     this.addToCart = this.addToCart.bind(this);
+    this.clearCart = this.clearCart.bind(this);
   }
 
   componentDidMount(){
@@ -19,9 +21,18 @@ class App extends Component {
   }
 
   addToCart(salad) {
+    window.localStorage.setItem('cart', JSON.stringify(this.state.cart.concat(salad)));
     this.setState(prevState => (
       { ...prevState
       , cart: prevState.cart.concat(salad)
+      }
+    ));
+  }
+  clearCart() {
+    window.localStorage.setItem('cart', JSON.stringify([]));
+    this.setState(prevState => (
+      { ...prevState
+      , cart: []
       }
     ));
   }
@@ -40,8 +51,8 @@ class App extends Component {
   renderPageContent(){ return(
       <Routes>
         <Route index element=<h2>Welcome</h2>/>
-        <Route path='/compose-salad' element={<ComposeSaladWrapper inventory={this.state.inventory} addToCart={this.addToCart}/>}/>
-        <Route path='/view-cart' element={<CartView cart={this.state.cart}/>}/>
+        <Route path='/compose-salad' element={<ComposeSaladWrapper inventory={this.state.inventory} addToCart={this.addToCart} />}/>
+        <Route path='/view-cart' element={<CartView cart={this.state.cart} clearCart={this.clearCart}/>}/>
         <Route path='/view-ingredient/:name' element={<ViewIngredient inventory={this.state.inventory}/>}/>
         <Route path='*' element=<h2>Page not found </h2>/>
       </Routes>
@@ -64,12 +75,18 @@ class App extends Component {
   }
 
   updateInventory(inventory) {
-    console.log('updateInventory:' + JSON.stringify(inventory))
     this.setState(prevState => {
       return {...prevState,
        inventory: inventory
       }
     });
+  }
+
+  getCartStorage() {
+    const stored = window.localStorage.getItem('cart')
+    if(!stored) return [];
+    return JSON.parse(stored)
+      .map(x => Object.assign(new Salad, x))
   }
 
 }

@@ -19,12 +19,10 @@ class ComposeSalad extends Component {
 
 
   handleSingleChange(name, value) {
-    console.log('previous state:' + JSON.stringify(this.state));
     this.setState({[name]: value});
   }
 
   handleMultipleChange(name, checked) {
-    console.log('previous state:' + JSON.stringify(this.state));
     this.setState(prevState => (
       { ...prevState
       , extra: {...prevState.extra, [name]: checked}
